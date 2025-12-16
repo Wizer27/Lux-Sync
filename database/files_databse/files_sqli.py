@@ -1,9 +1,5 @@
-from sqlalchemy import URL,text,create_engine
-from config import connect
-
-
-
-
+from sqlalchemy import create_engine
+from files_config import connect
 
 sync_engine =  create_engine(
     url = connect(),

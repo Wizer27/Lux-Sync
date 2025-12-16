@@ -1,0 +1,12 @@
+from sqlalchemy import Table,Column,Integer,String,MetaData,ARRAY,BLOB
+
+
+metadata_obj = MetaData()
+
+files_table = Table("sync_app_files",
+              metadata_obj,
+              Column("id",String,primary_key=True),
+              Column("owner",String),
+              Column("filename",String),
+              Column("data",BLOB)
+              )
