@@ -2,6 +2,7 @@ from sqlalchemy import text,select
 from files_models import files_table,metadata_obj
 from files_sqli import sync_engine
 import uuid
+from typing import List,Optional
 
 
 
@@ -33,12 +34,12 @@ def create_new_user_file(username:str,file_name:str,file_data):
             conn.commit()
         except Exception as e:
             return Exception(f"Error : {e}")
-def get_user_files(username:str):
+def get_user_files(username:str) -> List:
     with sync_engine.connect() as conn:
         try:
             stmt = select(files_table).where(files_table.c.owner == username)
             res = conn.execute(stmt)
-            return res.fetchall()
+            return list(res.fetchall())
         except Exception as e:
             return Exception(f"Error : {e}")        
 def delete_user_file(file_id:str) -> bool:
@@ -68,4 +69,13 @@ def update_user_file_data(file_id:str,new_data) -> bool:
             conn.commit()
             return True
         except Exception as e:
-            return Exception(f"Error : {e}")           
+            return Exception(f"Error : {e}")   
+def get_all_data():
+    with sync_engine.connect() as conn:
+        try:
+            stmt = select(files_table)
+            res = conn.execute(stmt)
+            return res.fetchall()
+        except Exception as e:
+            return Exception(f"Error : {e}")              
+         

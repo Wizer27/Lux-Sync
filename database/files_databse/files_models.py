@@ -1,4 +1,4 @@
-from sqlalchemy import Table,Column,Integer,String,MetaData,ARRAY,BLOB
+from sqlalchemy import Table,Column,Integer,String,MetaData,ARRAY,LargeBinary
 
 
 metadata_obj = MetaData()
@@ -8,5 +8,5 @@ files_table = Table("sync_app_files",
               Column("id",String,primary_key=True),
               Column("owner",String),
               Column("filename",String),
-              Column("data",BLOB)
+              Column("data",LargeBinary)
               )

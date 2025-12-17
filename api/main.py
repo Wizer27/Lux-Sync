@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv
 import time
 from database.core import register,login
+from database.files_databse.files_core import create_new_user_file,get_user_files,delete_user_file,update_user_file_data
 
 
 ########## SECURITY ##########
@@ -68,7 +69,8 @@ async def get_user_files(req:GetUserFiles,x_signature:str = Header(...),x_timest
     if not verify_signature(req.model_dump(),x_signature,x_timestamp):
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,detail = "Invalid signature")
     try:
-        pass
+        files = get_user_files(req.username)
+        return files
     except Exception as e:
         raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST,detail = f"Error : {e}") 
     
