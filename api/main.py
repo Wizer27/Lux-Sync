@@ -66,6 +66,11 @@ class GetUserFiles(BaseModel):
 @app.post("/get/user/files")   
 async def get_user_files(req:GetUserFiles,x_signature:str = Header(...),x_timestamp:str = Header(...)):
     if not verify_signature(req.model_dump(),x_signature,x_timestamp):
-        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,detail = "E") 
+        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,detail = "Invalid signature")
+    try:
+        pass
+    except Exception as e:
+        raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST,detail = f"Error : {e}") 
+    
 if __name__ == "__main__":
     uvicorn.run(app,host = "0.0.0.0",port = 8080)    
