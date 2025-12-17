@@ -70,6 +70,22 @@ def update_user_file_data(file_id:str,new_data) -> bool:
             return True
         except Exception as e:
             return Exception(f"Error : {e}")   
+def get_file_data(file_name:str):
+    with sync_engine.connect() as conn:
+        try:
+            stmt = select(files_table.c.data).where(files_table.c.filename == file_name)
+            res = conn.execute(stmt)
+            return res.fetchone()
+        except Exception as e:
+            return Exception(f"Error : {e}")  
+def get_user_file_names(username:str):
+    with sync_engine.connect() as conn:
+        try:
+            stmt = select(files_table.c.filename).where(files_table.c.owner == username)
+            res = conn.execute(stmt)
+            return res.fetchall()
+        except Exception as e:
+            return Exception(f"Error : {e}")              
 def get_all_data():
     with sync_engine.connect() as conn:
         try:
@@ -77,5 +93,6 @@ def get_all_data():
             res = conn.execute(stmt)
             return res.fetchall()
         except Exception as e:
-            return Exception(f"Error : {e}")              
+            return Exception(f"Error : {e}")  
+                    
          
