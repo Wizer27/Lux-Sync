@@ -95,4 +95,14 @@ def get_all_data():
         except Exception as e:
             return Exception(f"Error : {e}")  
                     
-         
+def is_user_has_this_file(username:str,file_name:str) -> bool:
+    with sync_engine.connect() as conn:
+        try:
+            stmt = select(files_table.c.filename).where(files_table.c.owner == username)
+            res = conn.execute(stmt)
+            data = res.fetchall()
+            if data is not None:
+                return file_name in list(data)
+            return False 
+        except Exception as e:
+            return Exception(f"Error : {e}")
