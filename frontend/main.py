@@ -38,5 +38,19 @@ def register(username:str,hash_psw:str) -> bool:
         return resp.status_code == 200
     except Exception as e:
         raise Exception(f"Error : {e}")
-  
+def login(username:str,hash_psw:str) -> bool:
+    try:
+        url = f"{API_BASE}/login"
+        data = {
+            "username":username,
+            "hash_psw":encode_passwrod(hash_psw)
+        }
+        headers = {
+            "X-Signature":generate_siganture(data),
+            "X-Timestamp":str(int(time.time()))
+        }
+        resp = requests.post(url,json = data,headers=headers)
+        return resp.status_code == 200
+    except Exception as e:
+        raise Exception(f"Error : {e}")
     
