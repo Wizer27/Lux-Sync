@@ -1,6 +1,6 @@
 from sqlalchemy import text,select
-from models import table,metadata_obj
-from sql_i import connect,sync_engine
+from database.models import table,metadata_obj
+from database.sql_i import connect,sync_engine
 
 
 def create_table():

@@ -1,5 +1,5 @@
 from sqlalchemy import URL,text,create_engine
-from config import connect
+from database.config import connect
 
 
 

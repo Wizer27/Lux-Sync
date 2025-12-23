@@ -48,8 +48,6 @@ async def register(req:Register,x_signature:str = Header(...),x_timestamp:str = 
         res = register(req.username,req.hash_psw)
         if not res:
             raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,detail = "Wrong data")
-        else:
-            os.makedirs(req.username,exist_ok=True)
     except Exception as e:
         raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST,detail = f"Error : {e}")
 @app.post("/login")

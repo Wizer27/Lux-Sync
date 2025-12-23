@@ -1,6 +1,6 @@
 from sqlalchemy import text,select
-from files_models import files_table,metadata_obj
-from files_sqli import sync_engine
+from database.files_databse.files_models import files_table,metadata_obj
+from database.files_databse.files_sqli import sync_engine
 import uuid
 from typing import List,Optional
 

@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from files_config import connect
+from database.files_databse.files_config import connect
 
 sync_engine =  create_engine(
     url = connect(),
