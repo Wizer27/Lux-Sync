@@ -53,4 +53,7 @@ def login(username:str,hash_psw:str) -> bool:
         return resp.status_code == 200
     except Exception as e:
         raise Exception(f"Error : {e}")
+
+def upload_file(username:str,file_name:str,file):
+    pass    
     
