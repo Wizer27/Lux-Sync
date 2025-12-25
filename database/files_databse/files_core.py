@@ -1,4 +1,4 @@
-from sqlalchemy import text,select
+from sqlalchemy import text,select,and_
 from database.files_databse.files_models import files_table,metadata_obj
 from database.files_databse.files_sqli import sync_engine
 import uuid
@@ -12,13 +12,13 @@ from typing import List,Optional
 def create_table():
     metadata_obj.create_all(sync_engine)
 
-def is_file_exists(file_id:str) -> bool:
+def is_file_exists(filename:str) -> bool:
     with sync_engine.connect() as conn:
         try:
-            stmt = select(files_table.c.id).where(files_table.c.id == file_id)
+            stmt = select(files_table.c.filename).where(files_table.c.filename == filename)
             res = conn.execute(stmt)
             data = res.fetchone()
-            return data[0] == file_id if data is not None else False
+            return data[0] == filename if data is not None else False
         except Exception as e:
             return Exception(f"Error : {e}")
 def create_new_user_file(username:str,file_name:str,file_data):
@@ -42,27 +42,26 @@ def get_user_files(username:str) -> List:
             return list(res.fetchall())
         except Exception as e:
             return Exception(f"Error : {e}")        
-def delete_user_file(file_id:str) -> bool:
-    if not is_file_exists(file_id):
+def delete_user_file(username:str,filename:str) -> bool:
+    if not  is_user_has_this_file(username,filename):
         return False
     with sync_engine.connect() as conn:
         try:
-            stmt = files_table.update().where(files_table.c.id == file_id).values(
-                owner = "",
-                filename = "",
-                data = None
-            )
+            stmt = files_table.delete().where(and_(
+                files_table.c.filename == filename,
+                files_table.c.owner == username
+            ))
             conn.execute(stmt)
             conn.commit()
             return True
         except Exception as e:
             return Exception(f"Error : {e}")     
-def update_user_file_data(file_id:str,new_data) -> bool:
-    if not is_file_exists(file_id):
+def update_user_file_data(username:str,filename:str,new_data) -> bool:
+    if not  is_user_has_this_file(username,filename):
         return False
     with sync_engine.connect() as conn:
         try:
-            stmt = files_table.update().where(files_table.c.id == file_id).values(
+            stmt = files_table.update().where(files_table.c.filename == filename).values(
                 data = new_data
             )
             conn.execute(stmt)

@@ -54,6 +54,16 @@ def login(username:str,hash_psw:str) -> bool:
     except Exception as e:
         raise Exception(f"Error : {e}")
 
-def upload_file(username:str,file_name:str,file):
-    pass    
-    
+def upload_file(username:str,file_name:str,file) -> bool:
+    url = f"{API_BASE}/upload"
+    data = {
+        "username":username,
+        "file_name":file_name,
+        "file_data":file
+    }    
+    headers = {
+        "X-Signature":generate_siganture(data),
+        "x-Timestamp":str(int(time.time()))
+    }
+    resp = requests.post(url,json = data,headers=headers)
+    return resp.status_code == 200
