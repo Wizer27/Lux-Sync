@@ -48,3 +48,5 @@ def login(username:str,hash_psw:str) -> bool:
             return data[0] == hash_psw if data is not None else False
         except Exception as e:
             return Exception(f"Error : {e}")
+def test():
+    pass        
