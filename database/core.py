@@ -13,7 +13,7 @@ def get_all_data():
             res = conn.execute(stmt)
             return res.fetchall()
         except Exception as e:
-            return Exception(f"Error : {e}")
+            raise  Exception(f"Error : {e}")
 def is_user_exists(username:str) -> bool:
     with sync_engine.connect() as conn:
         try:
@@ -22,7 +22,7 @@ def is_user_exists(username:str) -> bool:
             data = res.fetchone()
             return data[0] == username if data is not None else False
         except Exception as e:
-            return Exception(f"Error : {e}")       
+            raise  Exception(f"Error : {e}")       
 def register(username:str,hash_psw:str) -> bool:
     if is_user_exists(username):
         return False
@@ -36,7 +36,7 @@ def register(username:str,hash_psw:str) -> bool:
             conn.commit()
             return True
         except Exception as e:
-            return Exception(f"Error : {e}")
+            raise  Exception(f"Error : {e}")
 def login(username:str,hash_psw:str) -> bool:
     if not is_user_exists(username):
         return False
@@ -47,4 +47,4 @@ def login(username:str,hash_psw:str) -> bool:
             data = res.fetchone()
             return data[0] == hash_psw if data is not None else False
         except Exception as e:
-            return Exception(f"Error : {e}")
+            raise  Exception(f"Error : {e}")

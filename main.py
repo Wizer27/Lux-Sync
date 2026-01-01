@@ -3,14 +3,14 @@ from pydantic import Field,BaseModel
 import uuid
 import hmac
 import hashlib
-from typing import List,Optional
+from typing import List,Optional,Union,BinaryIO
 import uvicorn
 import json
 import os
 from dotenv import load_dotenv
 import time
-from database.core import register,login
-from database.files_databse.files_core import create_new_user_file,get_user_files,delete_user_file,update_user_file_data,is_user_has_this_file
+from database.core import register,login,get_all_data
+from database.files_databse.files_core import create_new_user_file,get_user_files,delete_user_file,update_user_file_data,is_user_has_this_file,create_table
 from file_scripts.file_memory import count_size
 
 ########## SECURITY ##########
@@ -90,7 +90,7 @@ async def get_user_files(req:GetUserFiles,x_signature:str = Header(...),x_timest
 class UploadFile(BaseModel):
     username:str
     file_name:str
-    file_data:str
+    file_data:Union[bytes,bytearray,BinaryIO,memoryview]
 
 
 @app.post("/upload")
@@ -124,7 +124,6 @@ async def delete(req:DeleteFile,x_signature:str = Header(...),x_timestamp:str = 
             raise HTTPException(status_code = status.HTTP_409_CONFLICT,detail = "Error occupated")
     except Exception as e:
         raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST,detail = f"Error : {e}")
-
 
 
 if __name__ == "__main__":

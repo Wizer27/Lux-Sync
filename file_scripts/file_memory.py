@@ -16,4 +16,3 @@ def count_size(file_name:str) -> int:
             raise KeyError("File not found")                
     except Exception as e:
         raise Exception(f"Error : {e}")
-print(count_size("test.txt"))    

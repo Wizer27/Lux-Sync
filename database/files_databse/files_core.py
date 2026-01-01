@@ -10,6 +10,7 @@ from typing import List,Optional
 
 
 def create_table():
+    metadata_obj.drop_all(sync_engine)
     metadata_obj.create_all(sync_engine)
 
 def is_file_exists(filename:str) -> bool:
@@ -124,6 +125,10 @@ def is_user_has_this_file(username:str,file_name:str) -> bool:
 def get_user_total_file_size(username:str):
     with sync_engine.connect() as conn:
         try:
-            pass
+            stmt = select(files_table.c.size).where(files_table.c.owner == username)
+            res = conn.execute(stmt)
+            data = res.fetchall()
+            print(data)
         except Exception as e:
-            raise Exception(f"Error : {e}")        
+            raise Exception(f"Error : {e}")   
+  

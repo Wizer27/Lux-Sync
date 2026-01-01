@@ -5,6 +5,8 @@ import time
 import hashlib
 from dotenv import load_dotenv
 import os
+from pathlib import Path
+from typing import Union,BinaryIO
 
 
 load_dotenv()
@@ -35,6 +37,7 @@ def register(username:str,hash_psw:str) -> bool:
             "X-Timestamp":str(int(time.time()))
         }
         resp = requests.post(url,json = data,headers=headers)
+        print(resp.json())
         return resp.status_code == 200
     except Exception as e:
         raise Exception(f"Error : {e}")
@@ -54,7 +57,7 @@ def login(username:str,hash_psw:str) -> bool:
     except Exception as e:
         raise Exception(f"Error : {e}")
 
-def upload_file(username:str,file_name:str,file) -> bool:
+def upload_file(username:str,file_name:str,file:Union[bytes,bytearray,BinaryIO,memoryview]) -> bool:
     url = f"{API_BASE}/upload"
     data = {
         "username":username,
