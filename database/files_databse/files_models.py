@@ -8,5 +8,6 @@ files_table = Table("sync_app_files",
               Column("id",String,primary_key=True),
               Column("owner",String),
               Column("filename",String),
-              Column("data",LargeBinary)
+              Column("data",LargeBinary),
+              Column("size",Integer)
               )

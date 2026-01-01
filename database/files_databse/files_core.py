@@ -20,20 +20,24 @@ def is_file_exists(filename:str) -> bool:
             data = res.fetchone()
             return data[0] == filename if data is not None else False
         except Exception as e:
-            return Exception(f"Error : {e}")
-def create_new_user_file(username:str,file_name:str,file_data):
+            raise  Exception(f"Error : {e}")
+        
+def create_new_user_file(username:str,file_name:str,file_data,size:int):
     with sync_engine.connect() as conn:
         try:
             stmt = files_table.insert().values(
                 id = str(uuid.uuid4()),
                 owner = username,
                 filename = file_name,
-                data = file_data
+                data = file_data,
+                size = size
             )
             conn.execute(stmt)
             conn.commit()
         except Exception as e:
-            return Exception(f"Error : {e}")
+            raise  Exception(f"Error : {e}")
+        
+
 def get_user_files(username:str) -> List:
     with sync_engine.connect() as conn:
         try:
@@ -41,7 +45,9 @@ def get_user_files(username:str) -> List:
             res = conn.execute(stmt)
             return list(res.fetchall())
         except Exception as e:
-            return Exception(f"Error : {e}")        
+            raise  Exception(f"Error : {e}")   
+
+
 def delete_user_file(username:str,filename:str) -> bool:
     if not  is_user_has_this_file(username,filename):
         return False
@@ -55,7 +61,10 @@ def delete_user_file(username:str,filename:str) -> bool:
             conn.commit()
             return True
         except Exception as e:
-            return Exception(f"Error : {e}")     
+            raise  Exception(f"Error : {e}")   
+
+
+
 def update_user_file_data(username:str,filename:str,new_data) -> bool:
     if not  is_user_has_this_file(username,filename):
         return False
@@ -68,7 +77,9 @@ def update_user_file_data(username:str,filename:str,new_data) -> bool:
             conn.commit()
             return True
         except Exception as e:
-            return Exception(f"Error : {e}")   
+            raise  Exception(f"Error : {e}")  
+
+
 def get_file_data(file_name:str):
     with sync_engine.connect() as conn:
         try:
@@ -76,7 +87,9 @@ def get_file_data(file_name:str):
             res = conn.execute(stmt)
             return res.fetchone()
         except Exception as e:
-            return Exception(f"Error : {e}")  
+            raise  Exception(f"Error : {e}") 
+
+
 def get_user_file_names(username:str):
     with sync_engine.connect() as conn:
         try:
@@ -84,7 +97,9 @@ def get_user_file_names(username:str):
             res = conn.execute(stmt)
             return res.fetchall()
         except Exception as e:
-            return Exception(f"Error : {e}")              
+            raise  Exception(f"Error : {e}")   
+
+
 def get_all_data():
     with sync_engine.connect() as conn:
         try:
@@ -92,7 +107,7 @@ def get_all_data():
             res = conn.execute(stmt)
             return res.fetchall()
         except Exception as e:
-            return Exception(f"Error : {e}")  
+            raise Exception(f"Error : {e}")  
                     
 def is_user_has_this_file(username:str,file_name:str) -> bool:
     with sync_engine.connect() as conn:
@@ -104,4 +119,11 @@ def is_user_has_this_file(username:str,file_name:str) -> bool:
                 return file_name in list(data)
             return False 
         except Exception as e:
-            return Exception(f"Error : {e}")
+            raise  Exception(f"Error : {e}")
+        
+def get_user_total_file_size(username:str):
+    with sync_engine.connect() as conn:
+        try:
+            pass
+        except Exception as e:
+            raise Exception(f"Error : {e}")        
