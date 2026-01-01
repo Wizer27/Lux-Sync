@@ -1,5 +1,5 @@
 from fastapi import FastAPI,Header,Depends,HTTPException,Request,status
-from pydantic import Field,BaseModel
+from pydantic import Field,BaseModel,ConfigDict
 import uuid
 import hmac
 import hashlib
@@ -9,7 +9,7 @@ import json
 import os
 from dotenv import load_dotenv
 import time
-from database.core import register,login,get_all_data
+from database.core import register,login,get_all_data,select_test
 from database.files_databse.files_core import create_new_user_file,get_user_files,delete_user_file,update_user_file_data,is_user_has_this_file,create_table
 from file_scripts.file_memory import count_size
 
@@ -88,6 +88,7 @@ async def get_user_files(req:GetUserFiles,x_signature:str = Header(...),x_timest
 
 
 class UploadFile(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     username:str
     file_name:str
     file_data:Union[bytes,bytearray,BinaryIO,memoryview]
@@ -124,7 +125,6 @@ async def delete(req:DeleteFile,x_signature:str = Header(...),x_timestamp:str = 
             raise HTTPException(status_code = status.HTTP_409_CONFLICT,detail = "Error occupated")
     except Exception as e:
         raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST,detail = f"Error : {e}")
-
 
 if __name__ == "__main__":
     uvicorn.run(app,host = "0.0.0.0",port = 8080)    

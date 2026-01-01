@@ -48,3 +48,12 @@ def login(username:str,hash_psw:str) -> bool:
             return data[0] == hash_psw if data is not None else False
         except Exception as e:
             raise  Exception(f"Error : {e}")
+def select_test():
+    with sync_engine.connect() as conn:
+        try:
+            stmt = select(table.c.username)
+            res = conn.execute(stmt)
+            data = res.fetchall()
+            return data
+        except Exception as e:
+            raise Exception(f"Error : {e}")

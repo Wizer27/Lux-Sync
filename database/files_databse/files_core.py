@@ -122,13 +122,18 @@ def is_user_has_this_file(username:str,file_name:str) -> bool:
         except Exception as e:
             raise  Exception(f"Error : {e}")
         
-def get_user_total_file_size(username:str):
+def get_user_total_file_size(username:str) -> int:
     with sync_engine.connect() as conn:
         try:
             stmt = select(files_table.c.size).where(files_table.c.owner == username)
             res = conn.execute(stmt)
             data = res.fetchall()
-            print(data)
+            total:int = 0
+            if data is not None:
+                for cort in data:
+                    size = cort[0]
+                    total += int(size)
+            return total        
         except Exception as e:
             raise Exception(f"Error : {e}")   
   
