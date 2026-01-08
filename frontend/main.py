@@ -41,6 +41,8 @@ def register(username:str,hash_psw:str) -> bool:
         return resp.status_code == 200
     except Exception as e:
         raise Exception(f"Error : {e}")
+    
+    
 def login(username:str,hash_psw:str) -> bool:
     try:
         url = f"{API_BASE}/login"

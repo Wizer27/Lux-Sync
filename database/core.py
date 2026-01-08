@@ -1,4 +1,4 @@
-from sqlalchemy import text,select
+from sqlalchemy import text,select,exc
 from database.models import table,metadata_obj
 from database.sql_i import connect,sync_engine
 
@@ -30,7 +30,8 @@ def register(username:str,hash_psw:str) -> bool:
         try:
             stmt = table.insert().values(
                 username = username,
-                hash_psw = hash_psw
+                hash_psw = hash_psw,
+                sub = False
             )
             conn.execute(stmt)
             conn.commit()
@@ -57,3 +58,31 @@ def select_test():
             return data
         except Exception as e:
             raise Exception(f"Error : {e}")
+
+def sub(username:str) -> bool:
+    if not is_user_exists(username):
+        return False
+    with sync_engine.connect() as conn:
+        try:
+            stmt = table.update().where(table.c.username == username).values(
+                sub = True
+            )
+            conn.execute(stmt)
+            conn.commit()
+            return True
+        except exc.SQLAlchemyError:
+            raise exc.SQLAlchemyError(f"Error while executing")       
+        
+def is_user_subbed(username:str) -> bool:
+    if not is_user_exists(username):
+        raise NameError("User not found")
+    with sync_engine.connect() as conn:
+        try:
+            stmt = select(table.c.sub).where(table.c.username == username)
+            res = conn.execute(stmt)
+            data = res.scalar_one_or_none()
+            if data is not None:
+                return data
+            return False
+        except exc.SQLAlchemyError:
+            raise exc.SQLAlchemyError("Error while executing")
